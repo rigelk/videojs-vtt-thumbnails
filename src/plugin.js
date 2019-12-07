@@ -100,6 +100,7 @@ class vttThumbnailsPlugin {
     delete this.progressBar;
     delete this.vttData;
     delete this.thumbnailHolder;
+    delete this.timeHolder;
     delete this.lastStyle;
   }
 
@@ -168,10 +169,16 @@ class vttThumbnailsPlugin {
   setupThumbnailElement (data) {
     const mouseDisplay = this.player.$('.vjs-mouse-display')
     this.progressBar = this.player.$('.vjs-progress-control')
+    // thumbnail element
     const thumbHolder = document.createElement('div')
     thumbHolder.setAttribute('class', 'vjs-vtt-thumbnail-display')
     this.progressBar.appendChild(thumbHolder)
     this.thumbnailHolder = thumbHolder
+    // time element
+    const timeHolder = document.createElement('time')
+    timeHolder.setAttribute('class', 'vjs-vtt-thumbnail-time')
+    this.thumbnailHolder.appendChild(timeHolder)
+    this.timeHolder = timeHolder
     if(mouseDisplay) {
       mouseDisplay.classList.add('vjs-hidden')
     }
@@ -236,6 +243,7 @@ class vttThumbnailsPlugin {
     const duration = this.player.duration()
     const time = percent * duration
     const currentStyle = this.getStyleForTime(time)
+    this.timeHolder.innerText = time
 
     if (!currentStyle) {
       return this.hideThumbnailHolder()
