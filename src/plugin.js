@@ -243,7 +243,7 @@ class vttThumbnailsPlugin {
     const duration = this.player.duration()
     const time = percent * duration
     const currentStyle = this.getStyleForTime(time)
-    
+
     let timestamp = new Date(Math.round(time) * 1000).toISOString().substr(11, 8)
     timestamp = duration > 3599 ? timestamp : timestamp.substring(3)
     this.timeHolder.innerText = timestamp
@@ -253,18 +253,17 @@ class vttThumbnailsPlugin {
     }
 
     const xPos = percent * width
-    const thumbnailWidth=parseInt(currentStyle.width)
-    const halfthumbnailWidth=  thumbnailWidth>> 1
-    const marginRight= width-(xPos+halfthumbnailWidth);
-    const marginLeft= xPos-halfthumbnailWidth;
-    if(marginLeft >0 && marginRight>0) {
-      this.thumbnailHolder.style.transform = 'translateX(' + (xPos-halfthumbnailWidth) + 'px)'
-    }
-    else if(marginLeft <= 0) {
-      this.thumbnailHolder.style.transform = 'translateX(' + 0 + 'px)'
-    }
-    else if(marginRight <=0 ) {
-      this.thumbnailHolder.style.transform = 'translateX(' +  (width-thumbnailWidth) + 'px)'
+    const thumbnailWidth = parseInt(this.thumbnailHolder.offsetWidth)
+    const halfthumbnailWidth =  thumbnailWidth >> 1
+    const marginRight = width - (xPos + halfthumbnailWidth);
+    const marginLeft = xPos - halfthumbnailWidth;
+
+    if (marginLeft > 0 && marginRight > 0) {
+      this.thumbnailHolder.style.transform = 'translateX(' + xPos + 'px)'
+    } else if (marginLeft <= 0) {
+      this.thumbnailHolder.style.transform = 'translateX(' + halfthumbnailWidth + 'px)'
+    } else if (marginRight <= 0) {
+      this.thumbnailHolder.style.transform = 'translateX(' + (width - halfthumbnailWidth) + 'px)'
     }
 
     if (this.lastStyle && this.lastStyle === currentStyle) {
