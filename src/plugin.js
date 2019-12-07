@@ -243,7 +243,10 @@ class vttThumbnailsPlugin {
     const duration = this.player.duration()
     const time = percent * duration
     const currentStyle = this.getStyleForTime(time)
-    this.timeHolder.innerText = time
+    
+    let timestamp = new Date(Math.round(time) * 1000).toISOString().substr(11, 8)
+    timestamp = duration > 3599 ? timestamp : timestamp.substring(3)
+    this.timeHolder.innerText = timestamp
 
     if (!currentStyle) {
       return this.hideThumbnailHolder()
