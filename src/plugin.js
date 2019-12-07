@@ -67,6 +67,8 @@ class vttThumbnailsPlugin {
    *
    * @param    {Object} [options={}]
    *           A plain object containing options for the plugin.
+   *           - src: path to the .vtt file
+   *           - baseUrl (optional): host prepended to the image definitions
    */
   constructor (player, options) {
     this.player = player
@@ -114,7 +116,7 @@ class vttThumbnailsPlugin {
     if (!this.options.src) {
       return
     }
-    const baseUrl = this.options.baseUrl || this.getBaseUrl()
+    const baseUrl = this.getBaseUrl()
     const url = this.getFullyQualifiedUrl(this.options.src, baseUrl)
     this.getVttFile(url)
       .then((data) => {
@@ -336,7 +338,9 @@ class vttThumbnailsPlugin {
 
     // If there isn't a protocol, use the VTT source URL.
     let baseSplit
-    if (this.options.src.indexOf('//') >= 0) {
+    if (this.options.baseUrl) {
+      baseSplit = this.options.baseUrl
+    } else if (this.options.src.indexOf('//') >= 0) {
       baseSplit = this.options.src.split(/([^\/]*)$/gi).shift()
     } else {
       baseSplit = this.getBaseUrl() + this.options.src.split(/([^\/]*)$/gi).shift()
