@@ -114,7 +114,7 @@ class vttThumbnailsPlugin {
     if (!this.options.src) {
       return
     }
-    const baseUrl = this.getBaseUrl()
+    const baseUrl = this.options.baseUrl || this.getBaseUrl()
     const url = this.getFullyQualifiedUrl(this.options.src, baseUrl)
     this.getVttFile(url)
       .then((data) => {
