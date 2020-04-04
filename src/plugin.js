@@ -69,6 +69,7 @@ class vttThumbnailsPlugin {
    *           A plain object containing options for the plugin.
    *           - src: path to the .vtt file
    *           - baseUrl (optional): host prepended to the image definitions
+   *           - preloadStrategy (optional): preload images in the cache, for smooth scrubbing (default: none, available: 'all')
    */
   constructor (player, options) {
     this.player = player
@@ -123,6 +124,10 @@ class vttThumbnailsPlugin {
       .then((data) => {
         this.vttData = this.processVtt(data)
         this.setupThumbnailElement()
+        
+        if (this.options.hasOwnProperty('preloadStrategy')) {
+          this.preload(this.vttData)
+        }
       })
   }
 
@@ -164,6 +169,13 @@ class vttThumbnailsPlugin {
    */
   vttFileLoaded () {
     this.data.resolve(this.responseText)
+  }
+
+  /**
+   * This will fill the cache and thus preload images
+   */
+  preload (data) {
+    data.forEach(item => this.setImageInCacheForItem(item))
   }
 
   setupThumbnailElement (data) {
@@ -215,16 +227,20 @@ class vttThumbnailsPlugin {
     )
   }
 
+  setImageInCacheForItem (item) {
+    // Cache miss
+    if (item.css.url && !cache[item.css.url]) {
+      let image = new Image();
+      image.src = item.css.url;
+      cache[item.css.url] = image;
+    }
+  }
+
   getStyleForTime (time) {
     for (let i = 0; i < this.vttData.length; ++i) {
       let item = this.vttData[i]
       if (time >= item.start && time < item.end) {
-        // Cache miss
-        if (item.css.url && !cache[item.css.url]) {
-          let image = new Image();
-          image.src = item.css.url;
-          cache[item.css.url] = image;
-        }
+        this.setImageInCacheForItem(item)
 
         return item.css
       }
@@ -254,16 +270,16 @@ class vttThumbnailsPlugin {
 
     const xPos = percent * width
     const thumbnailWidth = parseInt(this.thumbnailHolder.offsetWidth)
-    const halfthumbnailWidth =  thumbnailWidth >> 1
-    const marginRight = width - (xPos + halfthumbnailWidth);
-    const marginLeft = xPos - halfthumbnailWidth;
+    const halfthumbnailWidth = thumbnailWidth / 2
+    const marginRight = width - (xPos + halfthumbnailWidth)
+    const marginLeft = xPos - halfthumbnailWidth
 
     if (marginLeft > 0 && marginRight > 0) {
-      this.thumbnailHolder.style.transform = 'translateX(' + xPos + 'px)'
+      this.thumbnailHolder.style.transform = 'translateX(' + (xPos - halfthumbnailWidth) + 'px)'
     } else if (marginLeft <= 0) {
-      this.thumbnailHolder.style.transform = 'translateX(' + halfthumbnailWidth + 'px)'
+      this.thumbnailHolder.style.transform = 'translateX(' + 0 + 'px)'
     } else if (marginRight <= 0) {
-      this.thumbnailHolder.style.transform = 'translateX(' + (width - halfthumbnailWidth) + 'px)'
+      this.thumbnailHolder.style.transform = 'translateX(' + (xPos + marginRight - halfthumbnailWidth) + 'px)'
     }
 
     if (this.lastStyle && this.lastStyle === currentStyle) {
@@ -298,7 +314,9 @@ class vttThumbnailsPlugin {
         })
 
       }
+
     })
+
     return processedVtts
   }
 
@@ -358,11 +376,14 @@ class vttThumbnailsPlugin {
 
     vttImageDef = this.getFullyQualifiedUrl(vttImageDef, baseSplit)
 
+    // deal with regular thumbnails
     if (!vttImageDef.match(/#xywh=/i)) {
       cssObj.background = 'url("' + vttImageDef + '")'
+      cssObj.url = vttImageDef
       return cssObj
     }
 
+    // deal with sprited thumbnails
     const imageProps = this.getPropsFromDef(vttImageDef)
     cssObj.background = 'url("' + imageProps.image + '") no-repeat -' + imageProps.x + 'px -' + imageProps.y + 'px'
     cssObj.width = imageProps.w + 'px'

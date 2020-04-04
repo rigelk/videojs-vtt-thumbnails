@@ -1,12 +1,12 @@
 {
   "name": "pthumbnails",
   "version": "1.1.4",
-  "description": "Display thumnails on progress bar hover, driven by external VTT files.",
+  "description": "Thumbnails on progress bar hover/videojs scrubbing, using VTT files.",
   "main": "dist/videojs-vtt-thumbnails.cjs.js",
   "module": "dist/videojs-vtt-thumbnails.es.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chrisboustead/videojs-vtt-thumbnails.git"
+    "url": "https://github.com/rigelk/videojs-vtt-thumbnails.git"
   },
   "generator-videojs-plugin": {
     "version": "5.0.3"
@@ -17,11 +17,10 @@
     "build:css": "npm-run-all build:css:sass build:css:bannerize",
     "build:css:bannerize": "bannerize dist/videojs-vtt-thumbnails.css --banner=scripts/banner.ejs",
     "build:css:sass": "node-sass src/plugin.scss dist/videojs-vtt-thumbnails.css --output-style=compressed --linefeed=lf",
-    "build:js": "npm-run-all build:js:rollup-modules build:js:rollup-umd build:js:bannerize build:js:uglify",
+    "build:js": "npm-run-all build:js:rollup-modules build:js:rollup-umd build:js:bannerize",
     "build:js:bannerize": "bannerize dist/videojs-vtt-thumbnails.js --banner=scripts/banner.ejs",
     "build:js:rollup-modules": "rollup -c scripts/modules.rollup.config.js",
     "build:js:rollup-umd": "rollup -c scripts/umd.rollup.config.js",
-    "build:js:uglify": "uglifyjs dist/videojs-vtt-thumbnails.js --comments --mangle --compress  -o dist/videojs-vtt-thumbnails.min.js",
     "build:test": "rollup -c scripts/test.rollup.config.js",
     "clean": "rimraf dist test/dist",
     "postclean": "mkdirp dist test/dist",
@@ -49,7 +48,7 @@
     "videojs",
     "videojs-plugin"
   ],
-  "author": "Chris Boustead <chris@forgemotion.com>",
+  "author": "Rigel Kent <sendmemail@rigelk.eu>",
   "license": "MIT",
   "vjsstandard": {
     "ignore": [
@@ -91,7 +90,7 @@
     "karma-qunit": "^1.2.1",
     "karma-safari-launcher": "^1.0.0",
     "mkdirp": "^0.5.1",
-    "node-sass": "4.5.3",
+    "node-sass": "^4.13.0",
     "node-static": "^0.7.9",
     "npm-run-all": "^4.0.2",
     "qunitjs": "^2.3.2",

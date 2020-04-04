@@ -1,8 +1,8 @@
 # videojs-vtt-thumbnails
 
-Video.js plugin that displays thumbnails on progress bar hover, driven by external VTT files.  Based on [this JW Player spec](https://support.jwplayer.com/customer/portal/articles/1407439-adding-preview-thumbnails). Note, this plugin currently only supports sprited thumbnails.
+Video.js plugin that displays thumbnails on progress bar hover, driven by external VTT files.  Based on [this JW Player spec](https://support.jwplayer.com/customer/portal/articles/1407439-adding-preview-thumbnails).
 
-Note: Plugin hides the default skin's mouse display timestamp on hover.
+This plugin supports both sprited and single images. If more than one image is given per second, a single image among them will be used.
 
 ## Table of Contents
 
@@ -13,8 +13,6 @@ Note: Plugin hides the default skin's mouse display timestamp on hover.
 - [Installation](#installation)
 - [Usage](#usage)
   - [`<script>` Tag](#script-tag)
-  - [Browserify/CommonJS](#browserifycommonjs)
-  - [RequireJS/AMD](#requirejsamd)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -30,46 +28,18 @@ To include videojs-vtt-thumbnails on your website or web application, use any of
 
 ### `<script>` Tag
 
-This is the simplest case. Get the script in whatever way you prefer and include the plugin _after_ you include [video.js][videojs], so that the `videojs` global is available.
+This is the simplest case. Get the script in whatever way you prefer and include the plugin _after_ you include [video.js][videojs], so that the `videojs` global is available. Don't forget to include the CSS file too.
 
 ```html
 <script src="//path/to/video.min.js"></script>
 <script src="//path/to/videojs-vtt-thumbnails.min.js"></script>
 <script>
-  var player = videojs('my-video');
+  var player = videojs('my-video')
   player.vttThumbnails({
-    src: 'example/thumbs.vtt'
-  });
+    src: 'example/thumbs.vtt',
+    baseUrl: 'http://localhost:9000' // optional. if not, example/ will be used as baseUrl, if the .vtt sub-files are not FQ URLs.
+  })
 </script>
-```
-
-### Browserify/CommonJS
-
-When using with Browserify, install videojs-vtt-thumbnails via npm and `require` the plugin as you would any other module.
-
-```js
-var videojs = require('video.js');
-
-// The actual plugin function is exported by this module, but it is also
-// attached to the `Player.prototype`; so, there is no need to assign it
-// to a variable.
-require('videojs-vtt-thumbnails');
-
-var player = videojs('my-video');
-
-player.vttThumbnails();
-```
-
-### RequireJS/AMD
-
-When using with RequireJS (or another AMD library), get the script in whatever way you prefer and `require` the plugin as you normally would:
-
-```js
-require(['video.js', 'videojs-vtt-thumbnails'], function(videojs) {
-  var player = videojs('my-video');
-
-  player.vttThumbnails();
-});
 ```
 
 ## License
